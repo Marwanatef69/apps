@@ -4,7 +4,9 @@ import apiClient from "./apiClient";
 
 function buildCoverUrl(mangaId, coverFileName) {
     if (!mangaId || !coverFileName) return null;
-    return `https://uploads.mangadex.org/covers/${mangaId}/${coverFileName}`;
+    return `/api/proxy?url=${encodeURIComponent(
+        `https://uploads.mangadex.org/covers/${mangaId}/${coverFileName}`
+    )}`;
 }
 
 export async function fetchPopularMangaList() {
