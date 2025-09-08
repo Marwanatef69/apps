@@ -18,7 +18,6 @@ export async function fetchPopularMangaList() {
             "contentRating[]": "safe",
         },
     });
-    console.log(data);
     return data.data.map((m) => {
         const title =
             m.attributes.title.en ||
