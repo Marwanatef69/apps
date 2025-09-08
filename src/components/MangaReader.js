@@ -32,7 +32,7 @@ function MangaRead() {
     const [chapters, setChapters] = useState([]);
     const [zoomMode, setZoomMode] = useState("fit-width");
     const [loading, setLoading] = useState(true);
-    const [exide, setExide] = useState(false);
+    const [, setExide] = useState(false);
 
     // Fetch current chapter + pages
     useEffect(() => {

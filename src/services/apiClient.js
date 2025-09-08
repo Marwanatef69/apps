@@ -5,13 +5,12 @@ import axios from "axios";
 // Central Axios instance configured to hit MangaDex via local CORS Anywhere proxy.
 // Make sure proxy.js is running on http://localhost:8080
 const apiClient = axios.create({
-    baseURL: "http://localhost:8080/api", // points to your backend
+    baseURL: "app-production-f9e8.up.railway.app/api", // points to your backend
     timeout: 20000,
     headers: {
         "Content-Type": "application/json",
     },
 });
-
 
 // Response interceptor: pass-through success, normalize errors
 apiClient.interceptors.response.use(

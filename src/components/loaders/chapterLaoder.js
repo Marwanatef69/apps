@@ -57,16 +57,13 @@ export default function ChapterLoader({ loading, onInView }) {
         <>
             {loading &&
                 Array.from({ length: 6 }).map((_, index) => (
-                    <Grid
-                        
-                        size={{ xs: 12, sm: 6, md: 4, lg: 3 }}
-                        key={index}>
+                    <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={index}>
                         <ChapterSkeleton />
                     </Grid>
                 ))}
 
             {/* Sentinel */}
-            <Grid  xs={12}>
+            <Grid xs={12}>
                 <div ref={ref} style={{ height: "1px" }} />
             </Grid>
         </>

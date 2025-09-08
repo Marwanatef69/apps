@@ -32,7 +32,7 @@ function MainPage() {
 
     useEffect(() => {
         fetchAllMangaData(0, true);
-    }, []);
+    }, [fetchAllMangaData]);
 
     const displayedManga =
         latestManga && latestManga.length > 0 ? latestManga : mangssa;
@@ -40,7 +40,6 @@ function MainPage() {
     const mangaGridItems = useMemo(() => {
         return displayedManga.map((manga) => (
             <Grid
-                
                 size={{ xs: 12, sm: 6, md: 4 }}
                 key={uuidv4()}
                 sx={{ minWidth: 0 }}>

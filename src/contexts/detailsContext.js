@@ -13,7 +13,7 @@ export const DetailsProvider = ({ children }) => {
     const [rating, setRating] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-    const [page, setPage] = useState(0);
+    const [, setPage] = useState(0);
     const [ordero, setOrder] = useState("desc");
     const [hasMoreChapters, setHasMoreChapters] = useState(true);
 
