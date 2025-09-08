@@ -136,6 +136,8 @@ export async function fetchLatestMangaBatch(page = 0) {
                     number: ch.attributes.chapter || "Oneshot",
                     updatedAt: ch.attributes.updatedAt,
                 }));
+                console.log(mangaMap[mangaId]);
+                console.log(mangaMap);
             } catch {
                 mangaMap[mangaId].chapters = [];
             }
