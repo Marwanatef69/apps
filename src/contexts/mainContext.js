@@ -37,8 +37,9 @@ export function MangaProvider({ children }) {
             ]);
             setPopularManga(popular);
             setLatestManga((prev) => (append ? [...prev, ...latest] : latest));
+            
         } catch (err) {
-            console.error("Error fetching manga:", err.message);
+            console.error("Error fetching manga sssss:", err.message);
         } finally {
             setLoading(false);
         }
