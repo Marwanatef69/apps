@@ -31,15 +31,14 @@ export function MangaProvider({ children }) {
     const fetchAllMangaData = async (pageToLoad = 0, append = false) => {
         try {
             setLoading(true);
-            console.log("start fetching")
             const [popular, latest] = await Promise.all([
                 fetchPopularManga(),
                 fetchLatestManga(pageToLoad),
             ]);
-            console.log("finish fetching")
             setPopularManga(popular);
             setLatestManga((prev) => (append ? [...prev, ...latest] : latest));
-        
+        } catch (err) {
+            console.error("Error fetching manga:", err.message);
         } finally {
             setLoading(false);
         }

@@ -58,12 +58,12 @@ export default function MangaLoader({ loading, onInView }) {
         <>
             {loading &&
                 Array.from({ length: 3 }).map((_, index) => (
-                    <Grid item size={{ xs: 12, sm: 6, md: 4 }} key={index}>
+                    <Grid  size={{ xs: 12, sm: 6, md: 4 }} key={index}>
                         <LatestMangaSkeleton />
                     </Grid>
                 ))}
             {/* Sentinel */}
-            <Grid item xs={12}>
+            <Grid  xs={12}>
                 <div ref={ref} style={{ height: "1px" }} />
             </Grid>
         </>

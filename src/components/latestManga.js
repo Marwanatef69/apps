@@ -42,7 +42,7 @@ const LatestMangaCard = ({ manga }) => {
 
             {/* Data Content */}
             <CardContent
-                noWrap
+                
                 sx={{
                     p: 1,
                     overflow: "hidden",

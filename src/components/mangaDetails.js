@@ -71,7 +71,7 @@ const MangaDetails = () => {
             <Grid container spacing={5} alignItems='flex-start'>
                 {/* Manga Cover */}
                 {manga.coverUrl && (
-                    <Grid item xs={12} md={4}>
+                    <Grid  xs={12} md={4}>
                         <Paper
                             elevation={8}
                             sx={{
@@ -91,7 +91,7 @@ const MangaDetails = () => {
 
                 {/* Text Info */}
                 {/* Text Info */}
-                <Grid item size={{ xs: 12, md: 12, lg: 8 }}>
+                <Grid  size={{ xs: 12, md: 12, lg: 8 }}>
                     <Paper
                         elevation={6}
                         sx={{
@@ -249,7 +249,7 @@ const MangaDetails = () => {
                     <Grid container spacing={3} sx={{ mt: 2 }}>
                         {chapters.map((ch) => (
                             <Grid
-                                item
+                                
                                 size={{ xs: 12, sm: 6, md: 4, lg: 3 }}
                                 key={ch.id}>
                                 <Card
