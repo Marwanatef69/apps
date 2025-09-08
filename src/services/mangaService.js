@@ -9,38 +9,115 @@ function buildCoverUrl(mangaId, coverFileName) {
     )}`;
 }
 
-export async function fetchPopularMangaList() {
-    const { data } = await apiClient.get("/manga", {
-        params: {
-            limit: 20,
-            "order[followedCount]": "desc",
-            "includes[]": ["cover_art"],
-            "contentRating[]": "safe",
-        },
-    });
-    return data.data.map((m) => {
-        const title =
-            m.attributes.title.en ||
-            Object.values(m.attributes.title)[0] ||
-            "No Title";
-        const coverRel = m.relationships.find(
-            (rel) => rel.type === "cover_art"
+export async function fetchLatestMangaBatch(page = 0) {
+    try {
+        // 1) Fetch latest chapters to collect manga IDs
+        const { data: chapterData } = await apiClient.get("/chapter", {
+            params: {
+                limit: 10,
+                offset: page * 10,
+                "includes[]": "manga",
+                "translatedLanguage[]": "en",
+                "contentRating[]": "safe",
+                "order[updatedAt]": "desc",
+            },
+        });
+
+        const mangaIds = [
+            ...new Set(
+                chapterData.data
+                    .map(
+                        (ch) =>
+                            ch.relationships.find((r) => r.type === "manga")?.id
+                    )
+                    .filter(Boolean)
+            ),
+        ];
+
+        if (mangaIds.length === 0) {
+            console.warn("⚠️ No manga IDs found for latest chapters");
+            return [];
+        }
+
+        // 2) Fetch manga metadata and cover
+        const { data: mangaRes } = await apiClient.get("/manga", {
+            params: {
+                limit: mangaIds.length,
+                "ids[]": mangaIds,
+                "includes[]": "cover_art",
+            },
+            paramsSerializer: {
+                serialize: () =>
+                    `limit=${mangaIds.length}&${mangaIds
+                        .map((id) => `ids[]=${id}`)
+                        .join("&")}&includes[]=cover_art`,
+            },
+        });
+
+        // Build a map for quick access
+        const mangaMap = {};
+        mangaRes.data.forEach((m) => {
+            const coverRel = m.relationships.find(
+                (rel) => rel.type === "cover_art"
+            );
+            const coverFile = coverRel?.attributes?.fileName;
+            mangaMap[m.id] = {
+                id: m.id,
+                title:
+                    m.attributes.title.en ||
+                    Object.values(m.attributes.title)[0] ||
+                    "No Title",
+                coverUrl: buildCoverUrl(m.id, `${coverFile}.256.jpg`),
+                status: m.attributes.status,
+                chapters: [], // ✅ safe default
+            };
+        });
+
+        // 3) Fetch last 3 chapters per manga
+        await Promise.all(
+            mangaIds.map(async (mangaId) => {
+                try {
+                    const { data } = await apiClient.get("/chapter", {
+                        params: {
+                            manga: mangaId,
+                            limit: 3,
+                            "translatedLanguage[]": "en",
+                            "order[chapter]": "desc",
+                        },
+                    });
+
+                    if (mangaMap[mangaId]) {
+                        mangaMap[mangaId].chapters = data.data.map((ch) => ({
+                            id: ch.id,
+                            number: ch.attributes.chapter || "Oneshot",
+                            updatedAt: ch.attributes.updatedAt,
+                        }));
+                    } else {
+                        console.warn(
+                            `⚠️ Manga ${mangaId} not found in mangaMap, skipping chapters`
+                        );
+                    }
+                } catch (err) {
+                    console.error(
+                        `❌ Failed to fetch chapters for manga ${mangaId}:`,
+                        err.message
+                    );
+                    if (mangaMap[mangaId]) mangaMap[mangaId].chapters = [];
+                }
+            })
         );
-        const coverFile = coverRel?.attributes?.fileName;
-        return {
-            id: m.id,
-            title,
-            coverUrl: buildCoverUrl(m.id, coverFile),
-            categories:
-                m.attributes.tags?.map(
-                    (tag) =>
-                        tag.attributes.name.en ||
-                        Object.values(tag.attributes.name)[0]
-                ) || [],
-            followers: m.attributes.followedCount || 0,
-            status: m.attributes.status,
-        };
-    });
+
+        // 4) Ratings
+        const ratings = await fetchMangaRatingsMap(mangaIds);
+
+        return Object.values(mangaMap).map((m) => ({
+            ...m,
+            rating: ratings[m.id]?.average ?? null,
+        }));
+    } catch (err) {
+        console.error("❌ fetchLatestMangaBatch failed:", err.message);
+        return [];
+    }
 }
 
 export async function fetchMangaRatingsMap(mangaIds) {
