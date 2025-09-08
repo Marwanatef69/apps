@@ -5,7 +5,7 @@ import axios from "axios";
 // Central Axios instance configured to hit MangaDex via local CORS Anywhere proxy.
 // Make sure proxy.js is running on http://localhost:8080
 const apiClient = axios.create({
-    baseURL: "/api.mangadex.org",
+    baseURL: "/api/proxy?url=https://api.mangadex.org",
     timeout: 20000,
     headers: {
         "Content-Type": "application/json",
