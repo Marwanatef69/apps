@@ -15,12 +15,14 @@ export default async function handler(req, res) {
             }
         }
 
+        // Send request to MangaDex with proper query string
         const response = await axios.get(
             `https://api.mangadex.org/manga?${params.toString()}`,
             {
                 headers: { "User-Agent": "MyReactApp/1.0" },
             }
         );
+
         res.status(200).json(response.data);
     } catch (error) {
         console.error(
